@@ -1,0 +1,81 @@
+{
+  "1A": {
+    "X0000_rej_sprzedazy_YYYYMmm": 5,
+    "X0000_rej_zakupu_YYYYMmm": 5,
+    "X0000_zest_rej_YYYYMmm": 6
+  },
+  "1B": {
+    "X0000_bilans_YYYYMmm": 3,
+    "X0000_RZiS_YYYYMmm": 3,
+    "X0000_ZOiS_YYYYMmm_A": 2,
+    "X0000_ZOiS_YYYYMmm_S": 1,
+    "X0000_przychody_NP_YYYYMmm": 1,
+    "X0000_koszty_YYYYMmm": 3,
+    "X0000_koszty_NKUP_YYYYMmm": 2
+  },
+  "1C": {
+    "X0000_inwestycje_YYYYMmm": 5
+  },
+  "2A": {
+    "X0000_saldo_100_YYYYMmm": 3,
+    "X0000_RK_YYYYMmm": 3
+  },
+  "2B": {
+    "X0000_saldo_130_YYYYMmm": 3,
+    "X0000_saldo_131_YYYYMmm": 1,
+    "X0000_WB": 3
+  },
+  "2C": {
+    "X0000_rozrachunki_303_YYYYMmm": 3,
+    "X0000_saldo_303_YYYYMmm": 3
+  },
+  "2D": {
+    "X0000_PIT_YYYYMmm": 2,
+    "X0000_saldo_220_221_YYYYMmm": 2,
+    "X0000_ZUS_DRA_YYYYMmm": 2
+  },
+  "2E/I": {
+    "X0000_amortyzacja_YYYYMmm": 1,
+    "X0000_saldo_401_YYYYMmm": 1
+  },
+  "2E/II": {
+    "X0000_ewidencja_ST_YYYYMmm": 1,
+    "X0000_saldo_gr0_YYYYMmm": 1
+  },
+  "2E/III": {
+    "X0000_ST_w_budowie_YYYYMmm": 2
+  },
+  "3A": {
+    "X0000_rozrachunki_202_YYYYMmm": 4,
+    "X0000_zapisy_202_YYYYMmm_A": 2,
+    "X0000_zapisy_202_YYYYMmm_S": 2
+  },
+  "3B": {
+    "X0000_saldo_641_YYYYMmm": 2,
+    "X0000_zapisy_641_YYYYMmm": 1
+  },
+  "3C": {
+    "X0000_rozrachunki_230_YYYYMmm": 3,
+    "X0000_saldo_230_YYYYMmm": 3
+  },
+  "3D": {
+    "X0000_rozrachunki_250_YYYYMmm": 3,
+    "X0000_saldo_250_YYYYMmm": 3
+  },
+  "3E": {
+    "X0000_saldo_zespol_8_YYYYMmm": 1,
+    "X0000_saldo_zespol_9_YYYYMmm": 2
+  },
+  "4A": {
+    "X0000_zest_dok_w_buf_YYYYMmm": 3
+  },
+  "4B": {
+    "X0000_JPK_VAT_V7M_YYYYMmm_UPO": 1,
+    "X0000_VAT_UE_YYYYMmm_UPO": 1
+  },
+  "4C": {
+    "LT_010_YYYYMmm": 1,
+    "OT_206_YYYYMmm": 1,
+    "WT_2_YYYYMmm": 1
+  }
+}

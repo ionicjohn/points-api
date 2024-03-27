@@ -1,0 +1,71 @@
+from flask import Flask, request
+from flask_cors import CORS, cross_origin
+from populate_point_tree import generate_points
+from populate_file_tree import get_last_generation_date, get_last_cached_simplified_tree, populate_file_tree, get_last_cached_full_tree
+from threading import Thread
+import json
+import time
+
+app = Flask("liczenie")
+cors = CORS(app)
+start_time = 0
+
+@app.route('/api/cached')
+def cached():
+    date = get_last_generation_date()
+    if not date:
+        return json.dumps({"output": []}), 200
+
+    return json.dumps({
+        "time": date,
+        "output": get_last_cached_simplified_tree()
+    })
+   
+@app.route('/api/populateFileTree', methods=['POST'])
+def generate():
+    if start_time != 0:
+        return json.dumps({"already_running": True}), 400
+    
+    def thread():
+        print("[!} file generation started")
+
+        global start_time
+        start_time = int(time.time())
+
+        populate_file_tree()
+
+        start_time = 0
+
+        print("[!} file generation completed")
+
+    Thread(target=thread).run()
+    return json.dumps({"status": "git"}), 200
+
+
+@app.route('/api/populatePointsTree', methods=['POST', 'OPTIONS'])
+@cross_origin(origins='*')
+def generate_point_s():
+    if not get_last_generation_date():
+        return {}, 400
+
+    cached_tree = get_last_cached_full_tree()
+    checkedNodes = request.get_json()['checkedNodes']
+    organization = request.get_json()['organization']
+
+    tree, output = generate_points(cached_tree, organization, checkedNodes)
+    return json.dumps({
+        "tree": tree,
+        "output": output
+    })
+
+
+@app.route('/api/generate/status')
+def get_status():
+    if start_time == 0:
+        if get_last_generation_date():
+            return json.dumps({"already_generated": True}), 200
+        return json.dumps({"not_running": True}), 200
+    
+    return json.dumps({"elapsed": int(time.time()) - start_time}), 200
+
+app.run("127.0.0.1", 9390, debug=True)
