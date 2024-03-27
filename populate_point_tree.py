@@ -188,4 +188,3 @@ def get_simplified_tree(file_tree):
         orgs[meow] = children
 
     return orgs
-
