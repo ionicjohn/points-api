@@ -2,3 +2,4 @@ __pycache__
 output.json
 simplified_tree.json
 output_info.json
+.env

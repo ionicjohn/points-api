@@ -7,18 +7,12 @@ from populate_point_tree import get_simplified_tree
 from dotenv import load_dotenv
 from datetime import datetime
 load_dotenv()
-
 def map_drive(network_path, user, password, drive, force=False):
     if os.path.exists(drive):
         print(drive, " Drive in use, trying to unmap...")
         if force:
-            try:
-                win32wnet.WNetCancelConnection2(drive, 1, 1)
-                print(drive, "successfully unmapped...")
-            except Exception as e:
-                print(drive, "Unmap failed, This might not be a network drive...")
-                print("Error:", e)
-                return -1
+            win32wnet.WNetCancelConnection2(drive, 1, 1)
+            print(drive, "successfully unmapped...")
         else:
             print("Non-forcing call. Will not unmap...")
             return -1
@@ -26,14 +20,10 @@ def map_drive(network_path, user, password, drive, force=False):
         print(drive, " drive is free...")
 
     print("Trying to map", network_path, "on to", drive, "...")
-    try:
-        print(network_path, drive)
-        win32wnet.WNetAddConnection2(win32netcon.RESOURCETYPE_DISK, drive, network_path, None, user, password)
-        print("Mapping successful")
-        return 1
-    except Exception as e:
-        print("Failed to map network drive:", e)
-        return -1
+    print(network_path, drive)
+    win32wnet.WNetAddConnection2(win32netcon.RESOURCETYPE_DISK, drive, network_path, None, user, password)
+    print("Mapping successful")
+    return 1
 
 def get_folder_structure(directory):
     file_tree = {}
@@ -44,7 +34,6 @@ def get_folder_structure(directory):
         else:
             file_tree[entry] = None
     return file_tree
-
 def process_directory(dir_path):
     years = {}
     months = {}
@@ -65,7 +54,6 @@ def process_directory(dir_path):
                 key = f"{year}/{month}"
                 folder_structure.setdefault(key, []).append(root)
     return years, months, folder_structure
-
 def path_to_dict(path):
     org_name = os.path.basename(os.path.dirname(path))
     if org_name.startswith("E") or org_name.startswith("K"):
@@ -81,7 +69,6 @@ def path_to_dict(path):
             elif os.path.isfile(child_path):
                 d['children'].append({'name': x, 'type': "file"})
         return d
-
     d = {'name': os.path.basename(path)}
     if os.path.isdir(path):
         d['type'] = "directory"
@@ -101,11 +88,9 @@ def path_to_dict(path):
     else:
         d['type'] = "file"
     return d
-
 simplified_tree_name = "simplified_tree.json"
 full_tree_name = "output.json"
 cache_info_name = "output_info.json"
-
 def get_last_generation_date():
     try:
         with open(cache_info_name, "r") as file:
@@ -116,12 +101,16 @@ def get_last_generation_date():
 def get_last_cached_simplified_tree():
     with open(simplified_tree_name, "r") as file:
         return json.loads(file.read())
-
 def get_last_cached_full_tree():
     with open(full_tree_name, "r") as file:
         return json.loads(file.read())
-
-
+def check_configuration():
+    not_set = []
+    for entry in ["filetree_username", "filetree_password", "filetree_drive", "filetree_networkpath"]:
+        if not os.environ.get(entry):
+            not_set.append(entry)
+    if len(not_set) > 0:
+        raise Exception("Some environment variables are not set: " + ",".join(not_set))
 def populate_file_tree():
     username = os.environ.get("filetree_username")
     password = os.environ.get("filetree_password")
@@ -129,8 +118,7 @@ def populate_file_tree():
     network_path = os.environ.get("filetree_networkpath")
 
     if not all([username, password, drive, network_path]):
-        print("One or more environment variables are missing. Please check your .env file.")
-        return
+        raise Exception("One or more environment variables are missing. Please check your .env file.")
 
     map_drive(network_path, username, password, drive)
     now = datetime.now()
@@ -142,15 +130,13 @@ def populate_file_tree():
             break
 
     if sur_directory is None:
-        print("The 'SUR' directory was not found.")
-        return
+        raise Exception("The 'SUR' directory was not found.")
 
     serialized = path_to_dict(drive)
     with open(full_tree_name, "w") as file:
         file.write(json.dumps(serialized, indent=4))
     with open(cache_info_name, "w") as file:
         file.write(json.dumps({"date": date_time}))
-
     meow = get_simplified_tree(serialized)
     with open(simplified_tree_name, 'w') as f:
         f.write(json.dumps(meow))

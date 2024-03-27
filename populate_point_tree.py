@@ -2,17 +2,14 @@ import json
 
 look = json.loads(open('look.json').read())
 
-def recur(tree, func, path=""): # recursively iterates through files in a tree
+def recur(tree, func, path=""):
     if tree["type"] == "file":
         return func(tree["name"], path)
 
     for children in tree["children"]:
         recur(children, func, str(path + "/" + tree["name"]))
 
-# jak ta funkcja zostanie naprawiona (czyt. dowiem sie jak poprawnie zaimplementowac cutdepth, i bedzie poprawnie upierdalal year/date i sam hash zostawial to ten skrypt juz powinien dzialac)
-# przekombinowane w chuj, ale cóż... nie mam łba do tego, to jest chyba wlasnie powod dlaczego nie dostalem sie na technika programiste - ta selekcja madrych ludzi ma sens
-# w ogole to jeszcze zrozumialem jak bardzo przejebana przyszlosc bede mial, dostalem tego taska tylko dlatego ze gpt nie potrafilo napisac kodu ktory posiada jakakolwiek logike
-# wszystkie miejsca dla programistow gdzie beda same latwe taski ktore chatgpt moze wygenerowac zostana zajete przez innych ludzi, i tacy ludzie po techniku informatyku nie beda mogli sobie roboty znalezc :c
+
 def cutdepth(tree, min_depth, max_depth, path="", currentdepth=0):
     tree["parent"] = path
     path += "/" + tree["name"]
@@ -21,10 +18,8 @@ def cutdepth(tree, min_depth, max_depth, path="", currentdepth=0):
 
     for children in tree["children"]:
         if children["type"] == 'directory': 
-            if currentdepth >= min_depth and currentdepth <= max_depth: # znalazlem ten kod bruteforcem, calkiem przypadkiem... 
-                # chyba to tak ma dzialac, ale nie jestem pewien??
+            if currentdepth >= min_depth and currentdepth <= max_depth:
                 files.append(children)
-
             files.extend(cutdepth(children, min_depth, max_depth, path, currentdepth + 1))
 
     return files
@@ -52,7 +47,7 @@ def cutmaxdepth(tree, path="", currentdepth=0):
                                     "name": "III",
                                     "children": []
                                 }
-                            ] # XDDDDDDDDDDD
+                            ]
                 continue
             if currentdepth >= 2: 
                 children["children"] = []
@@ -87,7 +82,7 @@ def get_organizations_from_tree(file_tree):
     organizations = []
  
     for entry in file_tree['children']:
-        if len(entry["name"]) == 5: # E0000
+        if len(entry["name"]) == 5: 
             organizations.append(entry["name"])
 
     return organizations
@@ -95,7 +90,7 @@ def get_organizations_from_tree(file_tree):
 def generate_points(file_tree, organization, filtered_paths=[]):
     output = []
 
-    def find(name): # finds a node by path
+    def find(name):
         tree = file_tree
 
         for entry in name.split("/"):
@@ -144,7 +139,7 @@ def generate_points(file_tree, organization, filtered_paths=[]):
                         punkciory_by_path[path] = 9999
                         output.append(f"BOING! full punkty za {absolute_path} = {punkciory_by_path[path]}")
 
-            for entry in look: # dodaje foldery ktorych nie ma w dykcie
+            for entry in look:
                 if entry not in punkciory_by_path:
                     punkciory_by_path[entry] = 0
 
@@ -156,7 +151,7 @@ def generate_points(file_tree, organization, filtered_paths=[]):
     for month in punkty_okresowe:
         for subdirectory in punkty_okresowe[month]:
             points = punkty_okresowe[month][subdirectory]
-            punkty_okresowe2[month[6:] + "/" + subdirectory] = { # cuts organization
+            punkty_okresowe2[month[6:] + "/" + subdirectory] = {
                 "points": punkty_okresowe[month][subdirectory],
                 "max": get_max_points(subdirectory),
                 "skipped": points >= 9999
@@ -193,3 +188,4 @@ def get_simplified_tree(file_tree):
         orgs[meow] = children
 
     return orgs
+
